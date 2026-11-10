@@ -1,0 +1,35 @@
+
+# Python environment
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Node dependencies
+frontend/node_modules/
+frontend/dist/
+
+# Dataset files
+dataset/raw/
+dataset/processed/
+dataset/normalized_images/
+dataset/splits/
+
+# Model checkpoints
+*.pth
+*.pt
+*.ckpt
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

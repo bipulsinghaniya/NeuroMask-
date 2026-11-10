@@ -1,0 +1,2 @@
+Test Images,TP,FP,FN,Dice,IoU,Precision,Recall
+329,1051246,321095,327711,0.7642,0.6184,0.766,0.7623

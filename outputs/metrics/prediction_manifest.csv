@@ -1,0 +1,7 @@
+category,source_image,visualization_file
+Glioma,..\dataset\raw\Glioma\enh_1849.png,Glioma_1.png
+Pituitary tumor,..\dataset\raw\Pituitary tumor\enh_1085.png,Pituitary_tumor_1.png
+Pituitary tumor,..\dataset\raw\Pituitary tumor\enh_1468.png,Pituitary_tumor_2.png
+Meningioma,..\dataset\raw\Meningioma\enh_495.png,Meningioma_1.png
+Meningioma,..\dataset\raw\Meningioma\enh_102.png,Meningioma_2.png
+Glioma,..\dataset\raw\Glioma\enh_2067.png,Glioma_2.png
