@@ -3,7 +3,7 @@
 > **AI-Powered Brain MRI Tumor Segmentation** — Upload a brain MRI scan and receive a pixel-accurate tumor segmentation mask in seconds, powered by a trained U-Net deep learning model.
 
 ---
-
+    
 ## ✨ What It Does
 
 NeuroMask is an end-to-end full-stack machine learning application for **brain tumor segmentation from MRI scans**. It combines a PyTorch U-Net model trained on 2,192 annotated MRI images with a FastAPI backend and a React frontend — letting you upload any brain MRI and instantly get a predicted binary tumor mask.
@@ -64,7 +64,7 @@ NeuroMask/
 │   │   ├── unet.py                 # U-Net encoder–bottleneck–decoder
 │   │   └── model_loader.py         # Loads neuromask_best_model.pth
 │   ├── preprocessing/
-│   │   └── image_preprocessor.py  # Grayscale → resize → min-max normalize → tensor
+│   │   └── image_preprocessor.py  # Grayscale → resize → min-max normalize →  tensor
 │   ├── services/
 │   │   └── prediction_service.py  # Runs inference, returns uint8 mask
 │   ├── training/                   # Training scripts (Colab)

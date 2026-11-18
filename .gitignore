@@ -33,3 +33,39 @@ dataset/splits/
 .idea/
 .DS_Store
 Thumbs.db
+
+
+
+# Personal documentation
+runbackend.md
+01_EDA.md
+
+
+
+
+
+
+
+
+
+
+
+
+# Dataset
+dataset/raw/
+dataset/processed/
+dataset/normalized_images/
+dataset/splits/
+dataset/splits.zip
+
+# Model checkpoints
+*.pth
+*.pt
+*.ckpt
+
+# Outputs
+outputs/
+
+# Personal documentation
+runbackend.md
+01_EDA.md
