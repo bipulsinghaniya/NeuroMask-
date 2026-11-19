@@ -69,3 +69,5 @@ outputs/
 # Personal documentation
 runbackend.md
 01_EDA.md
+
+!outputs/checkpoints/neuromask_best_model.pth
