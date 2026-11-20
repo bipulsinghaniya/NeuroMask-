@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import "./App.css";
 
-const API_URL = "http://127.0.0.1:8000/api/predict";
+// const API_URL = "http://127.0.0.1:8000/api/predict";
+const API_URL = "https://neuromask-backend.onrender.com/api/predict";
 
 const SAMPLES = [
   { id:1, label:"Glioma · Case 1",     category:"Glioma",      mri:"/samples/Glioma_1_mri.png", mask:"/samples/Glioma_1_mask.png" },
