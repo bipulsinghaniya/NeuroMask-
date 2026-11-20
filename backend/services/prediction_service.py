@@ -47,7 +47,7 @@ def predict_mri(image_path: str) -> np.ndarray:
     image_tensor = preprocess_mri(image_path).to(DEVICE)
 
     # Generate segmentation predictions.
-    with torch.no_grad():
+    with torch.inference_mode():
         logits = MODEL(image_tensor)
 
         # Convert logits into probabilities.
