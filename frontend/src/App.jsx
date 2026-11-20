@@ -12,6 +12,13 @@ const SAMPLES = [
   { id:6, label:"Pituitary · Case 2",  category:"Pituitary",   mri:"/samples/Pituitary_2_mri.png", mask:"/samples/Pituitary_2_mask.png" },
 ];
 
+const TRY_SAMPLES = [
+  { id:1, label:"Sample 1", category:"Glioma",     filename:"sample_1_glioma.png",    src:"/sample-images/sample_1_glioma.png" },
+  { id:2, label:"Sample 2", category:"Meningioma", filename:"sample_2_meningioma.png",src:"/sample-images/sample_2_meningioma.png" },
+  { id:3, label:"Sample 3", category:"Pituitary",  filename:"sample_3_pituitary.png", src:"/sample-images/sample_3_pituitary.png" },
+  { id:4, label:"Sample 4", category:"Pituitary",  filename:"sample_4_pituitary.png", src:"/sample-images/sample_4_pituitary.png" },
+];
+
 const BADGE = { Glioma:"badge-glioma", Meningioma:"badge-meningioma", Pituitary:"badge-pituitary" };
 
 export default function App() {
@@ -25,6 +32,7 @@ export default function App() {
   const [progress,   setProgress]   = useState(0);
   const [logs,       setLogs]       = useState(["[SYSTEM] NeuroMask API ready. Waiting for MRI input..."]);
   const [galleryFilter, setGalleryFilter] = useState("all");
+  const [selectedSampleId, setSelectedSampleId] = useState(null);
   const [modal,      setModal]      = useState(null);  // sample obj
   const [toast,      setToast]      = useState({ show:false, msg:"", type:"success" });
   const logsRef = useRef(null);
@@ -75,6 +83,7 @@ export default function App() {
   /* ── File handling ── */
   const handleFile = (f) => {
     if (!f || !["image/png","image/jpeg"].includes(f.type)) return;
+    setSelectedSampleId(null);
     setFile(f);
     setMriUrl(URL.createObjectURL(f));
     setMaskUrl(null); setError("");
@@ -82,6 +91,7 @@ export default function App() {
   };
 
   const clearFile = () => {
+    setSelectedSampleId(null);
     setFile(null); setMriUrl(null); setMaskUrl(null); setError("");
   };
 
@@ -90,17 +100,16 @@ export default function App() {
   const onDragLeave = () => { dragRef.current = false; };
   const onDrop = (e) => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); dragRef.current = false; };
 
-  /* ── Prediction ── */
-  const runPrediction = async () => {
-    if (!file) return;
+  /* ── Unified Prediction Logic ── */
+  const executePrediction = async (targetFile) => {
+    if (!targetFile) return;
     setLoading(true); setError(""); setProgress(0);
     addLog("[INFO] Sending MRI to FastAPI backend...", "log-info");
 
-    // Fake progress
-    const iv = setInterval(() => setProgress(p => { const n = Math.min(p + Math.random()*8, 88); return n; }), 150);
+    const iv = setInterval(() => setProgress(p => Math.min(p + Math.random()*8, 88)), 150);
 
     try {
-      const form = new FormData(); form.append("image", file);
+      const form = new FormData(); form.append("image", targetFile);
       const res = await fetch(API_URL, { method:"POST", body:form });
       if (!res.ok) throw new Error((await res.text()) || "Prediction failed");
       const blob = await res.blob();
@@ -119,6 +128,34 @@ export default function App() {
       clearInterval(iv);
       setLoading(false);
       setTimeout(() => setProgress(0), 1000);
+    }
+  };
+
+  const runPrediction = () => executePrediction(file);
+
+  /* ── Try Sample MRI Handler ── */
+  const handleSelectSample = async (sample) => {
+    if (loading) return;
+    setSelectedSampleId(sample.id);
+    setError("");
+    addLog(`[INFO] Selected sample: ${sample.label} (${sample.category} · ${sample.filename})`, "log-info");
+    try {
+      const response = await fetch(sample.src);
+      if (!response.ok) throw new Error("Could not load sample image from server.");
+      const blob = await response.blob();
+      const sampleFile = new File([blob], sample.filename, { type: "image/png" });
+
+      setFile(sampleFile);
+      setMriUrl(URL.createObjectURL(sampleFile));
+      setMaskUrl(null);
+      addLog(`[INFO] File loaded: ${sample.filename}`, "log-info");
+
+      await executePrediction(sampleFile);
+    } catch (err) {
+      const msg = err.message || "Failed to process sample image";
+      setError(msg);
+      addLog(`[ERROR] ${msg}`, "log-warn");
+      showToast("Sample loading failed", "error");
     }
   };
 
@@ -239,6 +276,38 @@ export default function App() {
                     </button>
 
                     {error && <div className="error-bar"><i className="fas fa-exclamation-circle" /> {error}</div>}
+
+                    {/* ── Try Sample MRI Scans ── */}
+                    <div className="try-samples-section">
+                      <div className="try-samples-header">
+                        <div className="try-samples-title">
+                          <i className="fas fa-images" /> Try Sample MRI Scans
+                        </div>
+                        <div className="try-samples-desc">
+                          Don't have an MRI scan? Try one of our sample cases.
+                        </div>
+                      </div>
+                      <div className="try-samples-grid">
+                        {TRY_SAMPLES.map(sample => (
+                          <div
+                            key={sample.id}
+                            className={`try-sample-card ${selectedSampleId === sample.id ? "active" : ""}`}
+                            onClick={() => handleSelectSample(sample)}
+                            title={`Click to analyze ${sample.label} (${sample.category})`}
+                          >
+                            <div className="try-sample-thumb">
+                              <img src={sample.src} alt={`${sample.label} (${sample.category})`} />
+                            </div>
+                            <div className="try-sample-info">
+                              <span className={`try-sample-badge ${BADGE[sample.category]}`}>
+                                {sample.category}
+                              </span>
+                              <div className="try-sample-label">{sample.label}</div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
 
                     <div>
                       <div className="console-header-bar">

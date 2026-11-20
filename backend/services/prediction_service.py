@@ -46,15 +46,11 @@ def predict_mri(image_path: str) -> np.ndarray:
     # Preprocess the input MRI image.
     image_tensor = preprocess_mri(image_path).to(DEVICE)
 
-    # Generate segmentation predictions.
+        # Generate segmentation predictions.
     with torch.inference_mode():
         logits = MODEL(image_tensor)
-
-        # Convert logits into probabilities.
-        probabilities = torch.sigmoid(logits)
-
-        # Convert probabilities into a binary mask.
-        binary_mask = (probabilities >= 0.5).to(torch.uint8)
+        binary_mask = (logits >= 0).to(torch.uint8)
+        del logits
 
     # Convert the tensor into a NumPy image.
     prediction_mask = (
@@ -62,3 +58,27 @@ def predict_mri(image_path: str) -> np.ndarray:
     ).astype(np.uint8)
 
     return prediction_mask
+
+    # # Generate segmentation predictions.
+    # with torch.inference_mode():
+    #     logits = MODEL(image_tensor)
+
+    #     # Convert logits into probabilities.
+    #     probabilities = torch.sigmoid(logits)
+
+    #     # Convert probabilities into a binary mask.
+    #     binary_mask = (probabilities >= 0.5).to(torch.uint8)
+
+
+  # Generate segmentation predictions.
+    # with torch.inference_mode():
+    #     logits = MODEL(image_tensor)
+    #     binary_mask = (logits >= 0).to(torch.uint8)
+    #     del logits 
+
+    # # Convert the tensor into a NumPy image.
+    # prediction_mask = (
+    #     binary_mask.squeeze().cpu().numpy() * 255
+    # ).astype(np.uint8)
+
+    # return prediction_mask

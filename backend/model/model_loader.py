@@ -9,18 +9,23 @@ from pathlib import Path
 import os
 import urllib.request
 import torch
-
+import tempfile
 from model.unet import UNet
 
 
 # Hugging Face model URL
+# MODEL_URL = os.getenv(
+#     "HF_MODEL_URL",
+#     "https://huggingface.co/bipul08/neuromask-brain-tumor-segmentation/resolve/main/neuromask_best_model.pth"
+# )
 MODEL_URL = os.getenv(
     "HF_MODEL_URL",
-    "https://huggingface.co/bipul08/neuromask-brain-tumor-segmentation/resolve/main/neuromask_best_model.pth"
+    "https://huggingface.co/bipul08/neuromask-brain-tumor-segmentation/resolve/main/neuromask_inference.pth"
 )
-
 # Store downloaded model in temporary storage
-CHECKPOINT_PATH = Path("/tmp/neuromask_best_model.pth")
+# CHECKPOINT_PATH = Path("/tmp/neuromask_best_model.pth")
+# CHECKPOINT_PATH = Path("/tmp/neuromask_inference.pth")
+CHECKPOINT_PATH = Path(tempfile.gettempdir()) / "neuromask_inference.pth"
 
 
 def download_model():
