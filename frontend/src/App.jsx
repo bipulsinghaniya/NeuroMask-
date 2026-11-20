@@ -120,8 +120,8 @@ export default function App() {
       showToast("Mask generated successfully!", "success");
     } catch(err) {
       const msg = err.message.includes("fetch")
-        ? "Cannot connect to backend. Is FastAPI running on port 8000?"
-        : err.message;
+    ? "Our AI inference server is currently experiencing resource limitations. The service may be temporarily unavailable while the hosting environment recovers. Please try again shortly."
+    : err.message;
       setError(msg);
       addLog(`[ERROR] ${msg}`, "log-warn");
       showToast("Prediction failed", "error");
